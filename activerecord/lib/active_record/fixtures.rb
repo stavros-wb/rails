@@ -611,6 +611,7 @@ module ActiveRecord
       @table_name = (model_class.respond_to?(:table_name) ?
                       model_class.table_name :
                       self.class.default_fixture_table_name(name, config))
+      @table_rows = nil
     end
 
     def [](x)
@@ -632,6 +633,7 @@ module ActiveRecord
     # Returns a hash of rows to be inserted. The key is the table, the value is
     # a list of rows to insert to that table.
     def table_rows
+      return @table_rows if @table_rows
       now = config.default_timezone == :utc ? Time.now.utc : Time.now
 
       # allow a standard key to be used for doing defaults in YAML
@@ -701,7 +703,7 @@ module ActiveRecord
 
         row
       end
-      rows
+      @table_rows = rows
     end
 
     class ReflectionProxy # :nodoc:
